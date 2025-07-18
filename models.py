@@ -46,12 +46,15 @@ class RepeatEntityInstance(Base):
     entity_type = Column(Integer, ForeignKey("repeat_entities.id"), primary_key=True)
     instance_id = Column(Integer, primary_key=True)
 
+
 class Group(Base):
 
     __tablename__ = "groups"
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True)
+    entity_id = Column(Integer, ForeignKey("repeat_entities.id"), primary_key=True)
     name = Column(String(1000))
-    owner_id = Column(Integer, nullable=True)
+    owner_id = Column(Integer, nullable=True, default=-1)
+
 
 class GroupInstanceRelation(Base):
 
@@ -60,7 +63,6 @@ class GroupInstanceRelation(Base):
     group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
     entity_id = Column(Integer, ForeignKey("repeat_entities.id"), primary_key=True)
     instance_id = Column(Integer, primary_key=True)
-    
 
 
 class RepeatRelation(Base):
@@ -75,7 +77,8 @@ class RepeatRelation(Base):
     forgot_times = Column(Integer, default=0)
     learn_status = Column(Integer, default=0)
 
-class UserGroupRelation:
+
+class UserGroupRelation(Base):
     __tablename__ = "user_group_relations"
     user_id = Column(Integer, primary_key=True)
     group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)

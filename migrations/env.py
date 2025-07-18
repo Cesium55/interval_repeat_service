@@ -5,14 +5,14 @@ from sqlalchemy import pool
 
 from alembic import context
 from models import Base
-from config import DB_SYNC_DRIVER, DB_PASSWORD, DB_HOST, DB_NAME, DB_USER
+from config import DB_SYNC_URL
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 # sqlalchemy.url = driver://user:pass@localhost/dbname
-config.set_main_option("sqlalchemy.url", f"{DB_SYNC_DRIVER}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}")
+config.set_main_option("sqlalchemy.url", DB_SYNC_URL)
 
 
 # Interpret the config file for Python logging.
@@ -70,9 +70,7 @@ def run_migrations_online() -> None:
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()

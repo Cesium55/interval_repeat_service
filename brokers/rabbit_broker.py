@@ -2,8 +2,12 @@ from faststream.rabbit import RabbitBroker, RabbitMessage
 from config import RABBIT_HOST
 import logging
 import asyncio
+import json
+
+from managers.Logger import AsyncLogger
 
 print(f"amqp://guest:guest@{RABBIT_HOST}:5672/")
+logger = AsyncLogger()
 
 
 class SafeRabbitBroker(RabbitBroker):
@@ -21,12 +25,11 @@ class SafeRabbitBroker(RabbitBroker):
 broker = SafeRabbitBroker(host=RABBIT_HOST)
 
 
-
-
 def decoder(msg):
-    msg.body = msg.body.decode()
+    msg.body = json.loads(msg.body.decode())
+
 
 @broker.subscriber("test_queue", decoder=decoder)
 async def handle_message(msg: RabbitMessage):
     m = msg.body
-    print(f"Получено сообщение из RabbitMQ: {m} {type(m)}")
+    await logger.info(f"Получено сообщение из RabbitMQ[debug]: {m} {type(m)}")
