@@ -9,7 +9,6 @@ logger = Logger()
 class JWTManager:
 
     def get_data(self, token: str, public_key):
-        logger.info(f"pub key: {public_key}")
         try:
             data = jwt.decode(token, public_key, algorithms=["RS256"])
             return data

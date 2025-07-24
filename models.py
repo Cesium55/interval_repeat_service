@@ -1,6 +1,8 @@
 from sqlalchemy import (
     Column,
+    ForeignKeyConstraint,
     Integer,
+    PrimaryKeyConstraint,
     String,
     Boolean,
     DateTime,
@@ -34,7 +36,7 @@ class RepeatEntity(Base):
 
     __tablename__ = "repeat_entities"
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True)
     name = Column(String, unique=True)
 
 
@@ -60,9 +62,15 @@ class GroupInstanceRelation(Base):
 
     __tablename__ = "group_instance_relations"
 
-    group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
-    entity_id = Column(Integer, ForeignKey("repeat_entities.id"), primary_key=True)
+    group_id = Column(Integer, primary_key=True)
+    entity_id = Column(Integer, primary_key=True)
     instance_id = Column(Integer, primary_key=True)
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["group_id", "entity_id"], ["groups.id", "groups.entity_id"]
+        ),
+    )
 
 
 class RepeatRelation(Base):
@@ -70,16 +78,25 @@ class RepeatRelation(Base):
 
     user_id = Column(Integer, primary_key=True)
     entity_type = Column(Integer, ForeignKey("repeat_entities.id"), primary_key=True)
-    entity_id = Column(Integer, primary_key=True)
+    instance_id = Column(Integer, primary_key=True)
 
     current_iteration = Column(Integer, default=0)
     last_repeated = Column(TIMESTAMP)
+    next_repeat_time = Column(TIMESTAMP)
     forgot_times = Column(Integer, default=0)
     learn_status = Column(Integer, default=0)
 
 
 class UserGroupRelation(Base):
     __tablename__ = "user_group_relations"
+
     user_id = Column(Integer, primary_key=True)
-    group_id = Column(Integer, ForeignKey("groups.id"), primary_key=True)
-    is_active = Column(Boolean, default=True)
+    group_id = Column(Integer, primary_key=True)
+    entity_id = Column(Integer, primary_key=True)
+
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["group_id", "entity_id"], ["groups.id", "groups.entity_id"]
+        ),
+        PrimaryKeyConstraint("user_id", "group_id", "entity_id"),
+    )

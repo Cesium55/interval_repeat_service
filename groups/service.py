@@ -6,12 +6,6 @@ from .schemas import GroupCreate, GroupsCreate
 
 class GroupService:
 
-    async def get(self, session: AsyncSession, id: int):
-        query = select(Group).where(Group.id == id)
-        db_result = await session.execute(query)
-        result = db_result.scalar_one_or_none()
-        return result
-
     async def get_all(self, session: AsyncSession):
         query = select(Group)
         db_result = await session.execute(query)

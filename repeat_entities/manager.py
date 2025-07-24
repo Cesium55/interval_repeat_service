@@ -20,3 +20,11 @@ class RepeatEntityManager:
         db_response = await session.execute(select(RepeatEntity))
         entity = db_response.scalars().all()
         return entity
+
+    async def get_mapping(self, session: AsyncSession):
+        data = await self.get_all(session)
+        result = dict()
+        for i in data:
+            result[i.name] = i.id
+
+        return result
