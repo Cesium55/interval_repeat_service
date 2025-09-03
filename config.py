@@ -20,6 +20,7 @@ REDIS_PASSWORD = os.environ.get("REDIS_PASSWORD")
 RABBIT_HOST = os.environ.get("RABBIT_HOST")
 
 WORDS_SERVICE_URL = os.environ.get("WORDS_SERVICE_URL")
+CLIPS_SERVICE_URL = os.environ.get("CLIPS_SERVICE_URL")
 
 if os.environ.get("TEST_MODE"):
     DB_SYNC_URL = "sqlite:///test.sqlite"

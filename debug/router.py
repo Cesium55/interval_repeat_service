@@ -3,6 +3,7 @@ from words.initializer import WordsInitializer
 from database import get_async_session
 from interval_repeat.groups_service import GroupsService
 from interval_repeat.schemas import GroupFind
+from instances_init.clips_initializer import clips_initializer
 
 
 router = APIRouter(prefix="/debug")
@@ -15,7 +16,7 @@ async def clear_words():
 
 
 @router.post("/re_init_words")
-async def clear_words():
+async def re_init_words():
     return await WordsInitializer().re_init()
 
 
@@ -23,3 +24,9 @@ async def clear_words():
 async def test_response(group: GroupFind, session=Depends(get_async_session)):
     gs = GroupsService()
     return await gs.find_group(session, group)
+
+
+@router.post("/re_init_clips")
+async def re_init_clips():
+    await clips_initializer.re_init()
+    return 0
