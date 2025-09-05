@@ -102,6 +102,13 @@ class IntervalRepeatManager:
         self, session: AsyncSession, user_id: int, entity_type: str, instance_id: int
     ):
         entity_id = (await re_manager.get_mapping(session)).get(entity_type)
+
+
+        if repeat_relation := await repeat_service.get_repeat_relation_or_none(
+            session, user_id, entity_id, instance_id
+        ):
+            return repeat_relation
+
         result = await repeat_service.start_learning(
             session, user_id, entity_id, instance_id
         )

@@ -350,3 +350,16 @@ class RepeatService:
         )
         result = await session.execute(stmt)
         return result.scalar_one_or_none()
+
+    async def get_repeat_relation_or_none(
+        self, session: AsyncSession, user_id: int, entity_id: int, instance_id: int
+    ):
+        query = select(RepeatRelation).where(
+            and_(
+                RepeatRelation.user_id == user_id,
+                RepeatRelation.entity_type == entity_id,
+                RepeatRelation.instance_id == instance_id,
+            )
+        )
+        db_response = await session.execute(query)
+        return db_response.scalar_one_or_none()
